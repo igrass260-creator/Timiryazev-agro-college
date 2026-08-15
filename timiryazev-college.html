@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КГУ «Тимирязевский агротехнический колледж»</title>
+<style>
+  :root{
+    --wheat: #d8a13a;
+    --wheat-pale: #f3e6c8;
+    --soil: #4a3728;
+    --soil-dark: #2c2019;
+    --steel: #3d5a4c;
+    --steel-deep: #24382f;
+    --paper: #f7f2e7;
+    --ink: #2c2019;
+    --rust: #b5502f;
+    --line: rgba(44,32,25,0.14);
+    --font-display: 'Rubik', 'Arial Narrow', sans-serif;
+    --font-body: 'Georgia', 'Times New Roman', serif;
+    --font-mono: 'Courier New', monospace;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&family=Bitter:wght@400;500;600;700&display=swap');
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Bitter', var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{ font-family:'Rubik', var(--font-display); font-weight:700; color:var(--soil-dark); letter-spacing:-0.01em; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 28px; }
+
+  /* texture */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:999; opacity:0.035; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== NAV ===== */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1120px; margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; font-family:'Rubik'; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:3px;
+    background:var(--steel);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--wheat-pale); font-weight:900; font-size:17px;
+    transform:rotate(-2deg);
+  }
+  .brand-text{ font-weight:700; font-size:15px; line-height:1.15; }
+  .brand-text span{ display:block; font-weight:500; font-size:11px; color:var(--rust); letter-spacing:0.08em; text-transform:uppercase; margin-top:2px;}
+  nav.links{ display:flex; gap:26px; font-size:14px; font-weight:500; }
+  nav.links a{ position:relative; padding-bottom:4px; }
+  nav.links a:after{
+    content:''; position:absolute; left:0; bottom:0; width:0; height:2px; background:var(--rust);
+    transition:width .25s ease;
+  }
+  nav.links a:hover:after{ width:100%; }
+  nav.links a.active{ color:var(--rust); }
+  nav.links a.active:after{ width:100%; }
+  .nav-cta{
+    background:var(--rust); color:var(--wheat-pale); padding:9px 18px; border-radius:2px;
+    font-family:'Rubik'; font-weight:700; font-size:13px; letter-spacing:0.02em;
+    flex-shrink:0;
+  }
+  .lang-switch{
+    display:flex; align-items:center; gap:2px; background:var(--wheat-pale);
+    border:1px solid var(--line); border-radius:20px; padding:3px; flex-shrink:0;
+  }
+  .lang-btn{
+    font-family:'Rubik'; font-weight:700; font-size:11.5px; letter-spacing:0.03em;
+    color:var(--soil); background:none; border:none; padding:6px 11px; border-radius:16px;
+    cursor:pointer; transition:background .2s ease, color .2s ease;
+  }
+  .lang-btn:hover{ color:var(--rust); }
+  .lang-btn.active{ background:var(--steel); color:var(--wheat-pale); }
+  .burger{
+    display:none; flex-direction:column; gap:5px; width:26px; cursor:pointer; background:none; border:none; padding:6px;
+  }
+  .burger span{ display:block; width:100%; height:2px; background:var(--soil-dark); transition:transform .25s ease, opacity .25s ease; }
+  .burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity:0; }
+  .burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    background:linear-gradient(180deg, var(--steel-deep) 0%, var(--steel) 100%);
+    color:var(--wheat-pale);
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:1120px; margin:0 auto; padding:100px 28px 90px;
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:50px; align-items:end;
+    position:relative; z-index:2;
+  }
+  .eyebrow{
+    font-family:'Rubik'; font-size:12px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--wheat); font-weight:700; margin-bottom:22px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow:before{ content:''; width:26px; height:2px; background:var(--wheat); display:inline-block; }
+  .hero h1{
+    color:#fff; font-size:clamp(38px, 5.4vw, 64px); line-height:1.02; font-weight:900;
+    letter-spacing:-0.02em;
+  }
+  .hero h1 em{ font-style:normal; color:var(--wheat); }
+  .hero-sub{
+    margin-top:22px; font-family:'Bitter'; font-size:17px; color:rgba(247,242,231,0.8); max-width:480px;
+  }
+  .hero-actions{ display:flex; gap:14px; margin-top:34px; }
+  .btn{
+    font-family:'Rubik'; font-weight:700; font-size:14px; padding:14px 26px; border-radius:2px;
+    display:inline-block; transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary{ background:var(--rust); color:#fff; }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(181,80,47,0.4); }
+  .btn-ghost{ border:1px solid rgba(247,242,231,0.35); color:var(--wheat-pale); }
+  .btn-ghost:hover{ border-color:var(--wheat); }
+
+  .hero-stats{
+    border-left:1px solid rgba(247,242,231,0.2); padding-left:34px;
+    display:flex; flex-direction:column; gap:22px;
+  }
+  .stat-num{ font-family:'Rubik'; font-size:40px; font-weight:900; color:var(--wheat); line-height:1; }
+  .stat-label{ font-size:13px; color:rgba(247,242,231,0.65); margin-top:4px; }
+
+  /* wheat field silhouette */
+  .field{
+    position:absolute; bottom:0; left:0; width:100%; height:130px; z-index:1;
+    background-repeat:repeat-x; background-size:60px 100%;
+    background-image:repeating-linear-gradient(
+      100deg,
+      transparent 0 22px,
+      rgba(216,161,58,0.15) 22px 24px
+    );
+    opacity:0.5;
+  }
+
+  /* ===== MARQUEE STRIP ===== */
+  .strip{
+    background:var(--wheat); color:var(--soil-dark); font-family:'Rubik'; font-weight:700;
+    font-size:13px; letter-spacing:0.04em; text-transform:uppercase;
+    padding:11px 0; overflow:hidden; white-space:nowrap; border-bottom:1px solid var(--line);
+  }
+  .strip-track{ display:inline-block; padding-left:100%; animation:marquee 32s linear infinite; }
+  .strip-track span{ margin:0 26px; }
+  @keyframes marquee{ from{ transform:translateX(0);} to{ transform:translateX(-100%);} }
+
+  /* ===== SECTION generic ===== */
+  section{ padding:88px 0; }
+  .sec-head{ max-width:640px; margin-bottom:52px; }
+  .sec-tag{
+    font-family:'Rubik'; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--rust); margin-bottom:14px;
+  }
+  .sec-head h2{ font-size:clamp(28px,3.6vw,40px); line-height:1.08; }
+  .sec-head p{ margin-top:16px; color:rgba(44,32,25,0.7); font-size:16px; max-width:560px; }
+
+  /* ===== ABOUT ===== */
+  .about{ background:var(--paper); }
+  .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+  .about-text p{ margin-bottom:16px; color:rgba(44,32,25,0.82); font-size:16px; }
+  .about-card{
+    background:#fff; border:1px solid var(--line); border-radius:4px; padding:30px;
+    box-shadow:0 2px 0 var(--line);
+  }
+  .about-card h3{ font-size:17px; margin-bottom:16px; }
+  .fact-row{ display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line); font-size:14.5px; }
+  .fact-row:last-child{ border-bottom:none; }
+  .fact-row b{ font-family:'Rubik'; font-weight:700; color:var(--steel); }
+
+  /* ===== PROGRAMS ===== */
+  .programs{ background:var(--soil-dark); color:var(--wheat-pale); }
+  .programs .sec-tag{ color:var(--wheat); }
+  .programs .sec-head p{ color:rgba(247,242,231,0.65); }
+  .prog-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(247,242,231,0.14); border:1px solid rgba(247,242,231,0.14); border-radius:4px; overflow:hidden; }
+  .prog-card{ background:var(--soil-dark); padding:34px 28px; position:relative; transition:background .25s ease; }
+  .prog-card:hover{ background:#251a13; }
+  .prog-index{ font-family:'Rubik'; font-size:12px; color:var(--wheat); letter-spacing:0.1em; margin-bottom:20px; opacity:0.8; }
+  .prog-card h3{ color:#fff; font-size:20px; margin-bottom:10px; line-height:1.2; }
+  .prog-code{ font-family:var(--font-mono); font-size:12px; color:rgba(247,242,231,0.45); margin-bottom:18px; }
+  .prog-meta{ display:flex; flex-direction:column; gap:7px; font-size:13.5px; color:rgba(247,242,231,0.75); }
+  .prog-meta span b{ color:var(--wheat); font-weight:700; }
+
+  /* ===== BENEFITS ===== */
+  .benefits{ background:var(--paper); }
+  .ben-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:26px; }
+  .ben-card{ border-top:3px solid var(--steel); padding-top:18px; }
+  .ben-card h4{ font-size:16px; margin-bottom:8px; }
+  .ben-card p{ font-size:14px; color:rgba(44,32,25,0.68); }
+  .ben-highlight{ border-top-color:var(--rust); }
+
+  /* ===== ADMISSION ===== */
+  .admission{ background:var(--steel); color:var(--wheat-pale); }
+  .admission .sec-tag{ color:var(--wheat); }
+  .admission .sec-head p{ color:rgba(247,242,231,0.7); }
+  .adm-grid{ display:grid; grid-template-columns:1fr 1fr; gap:50px; }
+  .adm-list{ list-style:none; counter-reset:doc; }
+  .adm-list li{
+    counter-increment:doc; display:flex; gap:16px; padding:16px 0; border-bottom:1px solid rgba(247,242,231,0.18);
+    font-size:15px;
+  }
+  .adm-list li:before{
+    content:counter(doc,decimal-leading-zero); font-family:'Rubik'; font-weight:700; color:var(--wheat); font-size:13px; flex-shrink:0; padding-top:2px;
+  }
+  .stipend-box{ background:rgba(0,0,0,0.18); border-radius:4px; padding:28px; }
+  .stipend-box h3{ color:#fff; font-size:17px; margin-bottom:18px; }
+  .stipend-row{ display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px dashed rgba(247,242,231,0.2); font-size:14px; }
+  .stipend-row:last-child{ border-bottom:none; }
+  .stipend-amt{ font-family:'Rubik'; font-weight:900; color:var(--wheat); font-size:19px; }
+
+  /* ===== REVIEWS ===== */
+  .reviews{ background:var(--wheat-pale); }
+  .rev-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .rev-card{
+    background:#fff; border:1px solid var(--line); border-radius:4px; padding:26px;
+    display:flex; flex-direction:column; gap:14px; box-shadow:0 2px 0 var(--line);
+  }
+  .rev-top{ display:flex; align-items:center; gap:12px; }
+  .rev-avatar{
+    width:40px; height:40px; border-radius:50%; background:var(--steel); color:var(--wheat-pale);
+    display:flex; align-items:center; justify-content:center; font-family:'Rubik'; font-weight:700; font-size:15px; flex-shrink:0;
+  }
+  .rev-name{ font-family:'Rubik'; font-weight:700; font-size:14.5px; color:var(--soil-dark); }
+  .rev-date{ font-size:12px; color:rgba(44,32,25,0.5); margin-top:1px; }
+  .rev-stars{ color:var(--wheat); letter-spacing:2px; font-size:13px; }
+  .rev-text{ font-size:14.5px; color:rgba(44,32,25,0.78); }
+
+  /* ===== STAFF ===== */
+  .staff{ background:var(--paper); }
+  .staff-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .staff-card{ text-align:center; }
+  .staff-photo{
+    width:100%; aspect-ratio:1; border-radius:4px; background:var(--wheat-pale);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-family:'Rubik'; font-weight:900; font-size:30px; color:var(--steel); margin-bottom:14px;
+  }
+  .staff-card h4{ font-size:14.5px; margin-bottom:3px; }
+  .staff-card span{ font-size:12.5px; color:rgba(44,32,25,0.55); }
+
+  /* ===== CONTACT ===== */
+  .contact{ background:var(--soil-dark); color:var(--wheat-pale); }
+  .contact .sec-tag{ color:var(--wheat); }
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+  .c-item{ display:flex; gap:16px; padding:20px 0; border-bottom:1px solid rgba(247,242,231,0.14); }
+  .c-icon{
+    width:38px; height:38px; border-radius:50%; background:var(--rust); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+  }
+  .c-item h4{ color:#fff; font-size:14px; margin-bottom:4px; }
+  .c-item p, .c-item a{ font-size:14.5px; color:rgba(247,242,231,0.75); }
+  .map-box{
+    border-radius:4px; overflow:hidden; border:1px solid rgba(247,242,231,0.16); min-height:280px;
+  }
+  .map-box iframe{ width:100%; height:100%; min-height:280px; border:0; filter:grayscale(0.3) contrast(1.05); }
+
+  footer{
+    background:var(--soil-dark); color:rgba(247,242,231,0.5); text-align:center;
+    padding:26px 0; font-size:12.5px; border-top:1px solid rgba(247,242,231,0.1);
+  }
+  footer b{ color:rgba(247,242,231,0.75); }
+
+  @media (max-width: 860px){
+    .hero-inner{ grid-template-columns:1fr; }
+    .hero-stats{ border-left:none; padding-left:0; flex-direction:row; flex-wrap:wrap; gap:28px; border-top:1px solid rgba(247,242,231,0.2); padding-top:24px; }
+    .about-grid, .adm-grid, .contact-grid{ grid-template-columns:1fr; }
+    .prog-grid{ grid-template-columns:1fr; }
+    .ben-grid{ grid-template-columns:1fr 1fr; }
+    .staff-grid{ grid-template-columns:repeat(2,1fr); }
+    .burger{ display:flex; }
+    nav.links{
+      display:flex; flex-direction:column; gap:0; position:fixed; top:71px; left:0; right:0;
+      background:var(--paper); border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden; transition:max-height .3s ease;
+      z-index:99;
+    }
+    nav.links.open{ max-height:400px; }
+    nav.links a{ padding:16px 28px; border-bottom:1px solid var(--line); }
+    nav.links a:after{ display:none; }
+  }
+  @media (max-width: 480px){
+    .ben-grid, .staff-grid{ grid-template-columns:1fr; }
+    .hero-inner{ padding-top:70px; }
+  }
+  @media (max-width: 640px){
+    .nav-cta{ display:none; }
+    .lang-btn{ padding:6px 8px; font-size:11px; }
+  }
+
+  ::selection{ background:var(--wheat); color:var(--soil-dark); }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div class="brand-mark">Т</div>
+      <div class="brand-text" data-i18n-html="brandName">Тимирязевский<span>Агротехнический колледж</span></div>
+    </div>
+    <nav class="links" id="navLinks">
+      <a href="#about" data-tab data-i18n="navAbout">О колледже</a>
+      <a href="#programs" data-tab data-i18n="navPrograms">Специальности</a>
+      <a href="#benefits" data-tab data-i18n="navBenefits">Студентам</a>
+      <a href="#admission" data-tab data-i18n="navAdmission">Поступление</a>
+      <a href="#reviews" data-tab data-i18n="navReviews">Отзывы</a>
+      <a href="#staff" data-tab data-i18n="navStaff">Коллектив</a>
+      <a href="#contact" data-tab data-i18n="navContact">Контакты</a>
+    </nav>
+    <a class="nav-cta" href="#admission" data-i18n="navCta">Подать заявку</a>
+    <div class="lang-switch" id="langSwitch">
+      <button class="lang-btn" data-lang="kz">KZ</button>
+      <button class="lang-btn active" data-lang="ru">RU</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <button class="burger" id="burgerBtn" aria-label="Меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow" data-i18n="heroEyebrow">КГУ · акимат СКО · Тимирязевский район</div>
+      <h1 data-i18n-html="heroH1">Профессия из земли,<br>а не из <em>учебника</em></h1>
+      <p class="hero-sub" data-i18n="heroSub">Готовим трактористов-машинистов, поваров и электрогазосварщиков — специалистов, которых ждут на полях, кухнях и производствах Северного Казахстана. Бесплатное общежитие, стипендия и диплом государственного образца.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#admission" data-i18n="heroBtnPrimary">Как поступить</a>
+        <a class="btn btn-ghost" href="#programs" data-i18n="heroBtnGhost">Смотреть специальности</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">127</div>
+        <div class="stat-label" data-i18n="stat1Label">студентов очного обучения</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label" data-i18n="stat2Label">программы подготовки кадров</div>
+      </div>
+      <div>
+        <div class="stat-num">34</div>
+        <div class="stat-label" data-i18n="stat3Label">месяца обучения на базе 9 классов</div>
+      </div>
+    </div>
+  </div>
+  <div class="field"></div>
+</section>
+
+<div class="strip">
+  <div class="strip-track">
+    <span data-i18n="strip1">Приём на 2026–2027 учебный год открыт</span>
+    <span>★</span>
+    <span data-i18n="strip2">Бесплатное проживание в общежитии</span>
+    <span>★</span>
+    <span data-i18n="strip3">Диплом государственного образца</span>
+    <span>★</span>
+    <span data-i18n="strip4">Участник движения WorldSkills</span>
+    <span>★</span>
+    <span data-i18n="strip1">Приём на 2026–2027 учебный год открыт</span>
+    <span>★</span>
+    <span data-i18n="strip2">Бесплатное проживание в общежитии</span>
+    <span>★</span>
+    <span data-i18n="strip3">Диплом государственного образца</span>
+    <span>★</span>
+    <span data-i18n="strip4">Участник движения WorldSkills</span>
+    <span>★</span>
+  </div>
+</div>
+
+<section id="about" class="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="aboutTag">О колледже</div>
+      <h2 data-i18n="aboutH2">Коммунальное государственное учреждение с сельскохозяйственным профилем</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p data-i18n="aboutP1">КГУ «Тимирязевский агротехнический колледж» — учебное заведение акимата Северо-Казахстанской области, подведомственное Министерству образования и науки Республики Казахстан. Колледж расположен в селе Тимирязево Тимирязевского района СКО и готовит рабочие кадры для агропромышленного комплекса региона.</p>
+        <p data-i18n="aboutP2">Приём ведётся на базе 9 классов. По итогам обучения выпускники получают диплом государственного образца с одновременным получением среднего образования, а также рабочую квалификацию по выбранной профессии.</p>
+        <p data-i18n="aboutP3">Колледж входит в число участников движения WorldSkills, готовя студентов к конкурсам профессионального мастерства по стандартам, приближенным к реальному производству.</p>
+      </div>
+      <div class="about-card">
+        <h3 data-i18n="aboutCardH3">Колледж в цифрах</h3>
+        <div class="fact-row"><span data-i18n="fact1Label">Форма собственности</span><b data-i18n="fact1Val">Коммунальная (КГУ)</b></div>
+        <div class="fact-row"><span data-i18n="fact2Label">Учредитель</span><b data-i18n="fact2Val">Акимат СКО</b></div>
+        <div class="fact-row"><span data-i18n="fact3Label">Ведомство</span><b data-i18n="fact3Val">МОН РК</b></div>
+        <div class="fact-row"><span data-i18n="fact4Label">Студентов</span><b>127</b></div>
+        <div class="fact-row"><span data-i18n="fact5Label">Программ обучения</span><b>3</b></div>
+        <div class="fact-row"><span data-i18n="fact6Label">Расположение</span><b data-i18n="fact6Val">с. Тимирязево, СКО</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="programs" class="programs">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="progTag">Специальности</div>
+      <h2 data-i18n="progH2">Три программы подготовки рабочих кадров</h2>
+      <p data-i18n="progP">Обучение на базе 9 классов, начало учебного года — 1 сентября. Срок обучения — 34 месяца (2 года 10 месяцев).</p>
+    </div>
+    <div class="prog-grid">
+      <div class="prog-card">
+        <div class="prog-index" data-i18n="prog1Index">01 / Механизация</div>
+        <h3 data-i18n="prog1H3">Тракторист-машинист сельскохозяйственного производства</h3>
+        <div class="prog-code">Шифр 3W07161603</div>
+        <div class="prog-meta">
+          <span data-i18n-html="prog1Meta1">Доп. квалификации: <b>слесарь-ремонтник</b> + <b>водитель категории «B»</b></span>
+          <span data-i18n-html="progMetaStart">Начало: <b>1 сентября 2026 г.</b></span>
+          <span data-i18n-html="progMetaDuration">Срок: <b>34 месяца</b></span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-index" data-i18n="prog2Index">02 / Общепит</div>
+        <h3 data-i18n="prog2H3">Повар</h3>
+        <div class="prog-code">Шифр 3W10130302</div>
+        <div class="prog-meta">
+          <span data-i18n-html="prog2Meta1">Доп. квалификация: <b>водитель категории «B»</b></span>
+          <span data-i18n-html="progMetaStart">Начало: <b>1 сентября 2026 г.</b></span>
+          <span data-i18n-html="progMetaDuration">Срок: <b>34 месяца</b></span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-index" data-i18n="prog3Index">03 / Сварочное дело</div>
+        <h3 data-i18n="prog3H3">Электрогазосварщик</h3>
+        <div class="prog-code">Шифр 3W07150501</div>
+        <div class="prog-meta">
+          <span data-i18n="prog3Meta1">Работа по металлу, монтаж и ремонт конструкций</span>
+          <span data-i18n-html="progMetaStart">Начало: <b>1 сентября 2026 г.</b></span>
+          <span data-i18n-html="progMetaDuration">Срок: <b>34 месяца</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="benefits" class="benefits">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="benTag">Студентам колледжа</div>
+      <h2 data-i18n="benH2">Что даёт колледж, кроме диплома</h2>
+    </div>
+    <div class="ben-grid">
+      <div class="ben-card ben-highlight">
+        <h4 data-i18n="ben1H4">Общежитие бесплатно</h4>
+        <p data-i18n="ben1P">Иногородним студентам предоставляется бесплатное проживание на весь период обучения.</p>
+      </div>
+      <div class="ben-card">
+        <h4 data-i18n="ben2H4">Проездные на каникулы</h4>
+        <p data-i18n="ben2P">Выплата в размере 2-х МРП на период зимних и летних каникул.</p>
+      </div>
+      <div class="ben-card">
+        <h4 data-i18n="ben3H4">Ежемесячная стипендия</h4>
+        <p data-i18n="ben3P">Начисляется успевающим студентам в зависимости от среднего балла успеваемости.</p>
+      </div>
+      <div class="ben-card">
+        <h4 data-i18n="ben4H4">Поддержка сирот</h4>
+        <p data-i18n="ben4P">Повышенная стипендия для детей-сирот и детей, оставшихся без попечения родителей.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="admission" class="admission">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="admTag">Поступление</div>
+      <h2 data-i18n="admH2">Как подать документы</h2>
+      <p data-i18n="admP">Приём ведётся среди выпускников 9-х классов. Ниже — полный список документов и размеры стипендий.</p>
+    </div>
+    <div class="adm-grid">
+      <div>
+        <ul class="adm-list">
+          <li data-i18n="doc1">Документ об образовании (подлинник)</li>
+          <li data-i18n="doc2">Медицинская справка по форме 086 У с флюороснимком</li>
+          <li data-i18n="doc3">Фотографии 3×4 — 4 шт.</li>
+          <li data-i18n="doc4">Удостоверение личности или свидетельство о рождении (копии)</li>
+          <li data-i18n="doc5">Номер банковского счёта</li>
+          <li data-i18n="doc6">Характеристика из школы</li>
+        </ul>
+      </div>
+      <div class="stipend-box">
+        <h3 data-i18n="stipendH3">Размер стипендии в месяц</h3>
+        <div class="stipend-row"><span data-i18n="stipend1Label">При успеваемости «4»</span><span class="stipend-amt">43 574 ₸</span></div>
+        <div class="stipend-row"><span data-i18n="stipend2Label">Сироты и дети без попечения родителей</span><span class="stipend-amt">56 646 ₸</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews" class="reviews">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="revTag">Отзывы</div>
+      <h2 data-i18n="revH2">Что говорят о поступлении и обучении</h2>
+      <p data-i18n="revP">Отзывы абитуриентов и студентов, оставленные на портале mycollege.kz.</p>
+    </div>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">А</div>
+          <div><div class="rev-name">Алексей</div><div class="rev-date">15.07.2022</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev1">Достойный сайт.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">О</div>
+          <div><div class="rev-name">Олеся</div><div class="rev-date">05.07.2022</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev2">Очень удобное приложение, и всё понятно.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">С</div>
+          <div><div class="rev-name">Сымбат</div><div class="rev-date">23.06.2022</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev3">Спасибо большое! Очень удобно и всё ясно, помогли с выбором профессии — тест добавил уверенности в правильном решении.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">А</div>
+          <div><div class="rev-name">Анастасия</div><div class="rev-date">20.06.2022</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev4">Спасибо. Получилось оставить заявку без проблем!</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">Д</div>
+          <div><div class="rev-name">Дильназ</div><div class="rev-date">16.04.2022</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev5">Хороший сайт, помогающий с выбором профессии.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">Р</div>
+          <div><div class="rev-name">Роман</div><div class="rev-date">03.02.2022</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev6">Большое спасибо за предоставленную возможность подавать заявку онлайн.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">В</div>
+          <div><div class="rev-name">Виктория</div><div class="rev-date">09.08.2021</div></div>
+        </div>
+        <div class="rev-stars">★★★★☆</div>
+        <p class="rev-text" data-i18n="rev7">Сайт удобен и помогает определиться. Хотелось бы, чтобы срок обучения был указан более точно.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">М</div>
+          <div><div class="rev-name">Марал</div><div class="rev-date">28.06.2021</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev8">Здесь можно выбрать много специальностей. Искала подходящую и решила стать фельдшером — очень понравилось!</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-avatar">С</div>
+          <div><div class="rev-name">Сергей</div><div class="rev-date">07.07.2021</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text" data-i18n="rev9">Спасибо. Всё на сайте понятно и доступно.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="staff" class="staff">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="staffTag">Коллектив</div>
+      <h2 data-i18n="staffH2">Сотрудники и преподаватели</h2>
+      <p data-i18n="staffP">Имена, указанные на официальном сайте колледжа. Остальные подразделения отмечены по названию отдела — персональные данные их сотрудников на сайте колледжа не публикуются.</p>
+    </div>
+    <div class="staff-grid">
+      <div class="staff-card"><div class="staff-photo">ЛА</div><h4>Леонтьева Анастасия Викторовна</h4><span data-i18n="staffRole">Сотрудник колледжа</span></div>
+      <div class="staff-card"><div class="staff-photo">ТА</div><h4>Телемесова Айгуль Аманбаевна</h4><span data-i18n="staffRole">Сотрудник колледжа</span></div>
+      <div class="staff-card"><div class="staff-photo">РО</div><h4>Рахимов Ойрат Аспанович</h4><span data-i18n="staffRole">Сотрудник колледжа</span></div>
+      <div class="staff-card"><div class="staff-photo">БЗ</div><h4>Бермагамбетова Зиягуль Батырбековна</h4><span data-i18n="staffRole">Сотрудник колледжа</span></div>
+      <div class="staff-card"><div class="staff-photo">МА</div><h4>Маканова Адемау Есмагзумовна</h4><span data-i18n="staffRole">Сотрудник колледжа</span></div>
+      <div class="staff-card"><div class="staff-photo">РД</div><h4>Рамазанова Дина Баламбаевна</h4><span data-i18n="staffRole">Сотрудник колледжа</span></div>
+      <div class="staff-card"><div class="staff-photo">—</div><h4 data-i18n="staffDept1">Администрация</h4><span data-i18n="staffDept1Sub">Директор и заместители</span></div>
+      <div class="staff-card"><div class="staff-photo">—</div><h4 data-i18n="staffDept2">Учебная часть</h4><span data-i18n="staffDept2Sub">Организация учебного процесса</span></div>
+      <div class="staff-card"><div class="staff-photo">—</div><h4 data-i18n="staffDept3">Мастера производственного обучения</h4><span data-i18n="staffDept3Sub">Практические занятия по специальностям</span></div>
+      <div class="staff-card"><div class="staff-photo">—</div><h4 data-i18n="staffDept4">Воспитательный отдел</h4><span data-i18n="staffDept4Sub">Работа с общежитием и студентами</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag" data-i18n="contactTag">Контакты</div>
+      <h2 data-i18n="contactH2">Как нас найти</h2>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="c-item">
+          <div class="c-icon">☎</div>
+          <div><h4 data-i18n="contactPhone">Телефон</h4><a href="tel:+77767160786">+7 776 716 0786</a></div>
+        </div>
+        <div class="c-item">
+          <div class="c-icon">✉</div>
+          <div><h4 data-i18n="contactEmail">Электронная почта</h4><a href="mailto:tim-colledge@lenta.ru">tim-colledge@lenta.ru</a></div>
+        </div>
+        <div class="c-item">
+          <div class="c-icon">⚑</div>
+          <div><h4 data-i18n="contactAddress">Адрес</h4><p data-i18n="contactAddressVal">СКО, Тимирязевский район, с. Тимирязево, ул. Комсомольская, 19</p></div>
+        </div>
+        <div class="c-item">
+          <div class="c-icon">⌂</div>
+          <div><h4 data-i18n="contactSite">Официальный сайт</h4><a href="https://timiryazev.mycollege.kz/" target="_blank" rel="noopener">timiryazev.mycollege.kz</a></div>
+        </div>
+      </div>
+      <div class="map-box">
+        <iframe src="https://www.google.com/maps?q=Timiryazevo,North%20Kazakhstan%20Region,Kazakhstan&output=embed" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" data-i18n-html="footerText">КГУ «Тимирязевский агротехнический колледж» · акимат Северо-Казахстанской области · <b>с. Тимирязево</b> — неофициальный информационный сайт</div>
+</footer>
+
+<script>
+  const translations = {
+    ru: {
+      navAbout:"О колледже", navPrograms:"Специальности", navBenefits:"Студентам", navAdmission:"Поступление",
+      navReviews:"Отзывы", navStaff:"Коллектив", navContact:"Контакты", navCta:"Подать заявку",
+      brandName:"Тимирязевский<span>Агротехнический колледж</span>",
+      heroEyebrow:"КГУ · акимат СКО · Тимирязевский район",
+      heroH1:"Профессия из земли,<br>а не из <em>учебника</em>",
+      heroSub:"Готовим трактористов-машинистов, поваров и электрогазосварщиков — специалистов, которых ждут на полях, кухнях и производствах Северного Казахстана. Бесплатное общежитие, стипендия и диплом государственного образца.",
+      heroBtnPrimary:"Как поступить", heroBtnGhost:"Смотреть специальности",
+      stat1Label:"студентов очного обучения", stat2Label:"программы подготовки кадров", stat3Label:"месяца обучения на базе 9 классов",
+      strip1:"Приём на 2026–2027 учебный год открыт", strip2:"Бесплатное проживание в общежитии",
+      strip3:"Диплом государственного образца", strip4:"Участник движения WorldSkills",
+      aboutTag:"О колледже", aboutH2:"Коммунальное государственное учреждение с сельскохозяйственным профилем",
+      aboutP1:"КГУ «Тимирязевский агротехнический колледж» — учебное заведение акимата Северо-Казахстанской области, подведомственное Министерству образования и науки Республики Казахстан. Колледж расположен в селе Тимирязево Тимирязевского района СКО и готовит рабочие кадры для агропромышленного комплекса региона.",
+      aboutP2:"Приём ведётся на базе 9 классов. По итогам обучения выпускники получают диплом государственного образца с одновременным получением среднего образования, а также рабочую квалификацию по выбранной профессии.",
+      aboutP3:"Колледж входит в число участников движения WorldSkills, готовя студентов к конкурсам профессионального мастерства по стандартам, приближенным к реальному производству.",
+      aboutCardH3:"Колледж в цифрах",
+      fact1Label:"Форма собственности", fact1Val:"Коммунальная (КГУ)",
+      fact2Label:"Учредитель", fact2Val:"Акимат СКО",
+      fact3Label:"Ведомство", fact3Val:"МОН РК",
+      fact4Label:"Студентов", fact5Label:"Программ обучения",
+      fact6Label:"Расположение", fact6Val:"с. Тимирязево, СКО",
+      progTag:"Специальности", progH2:"Три программы подготовки рабочих кадров",
+      progP:"Обучение на базе 9 классов, начало учебного года — 1 сентября. Срок обучения — 34 месяца (2 года 10 месяцев).",
+      prog1Index:"01 / Механизация", prog1H3:"Тракторист-машинист сельскохозяйственного производства",
+      prog1Meta1:"Доп. квалификации: <b>слесарь-ремонтник</b> + <b>водитель категории «B»</b>",
+      progMetaStart:"Начало: <b>1 сентября 2026 г.</b>", progMetaDuration:"Срок: <b>34 месяца</b>",
+      prog2Index:"02 / Общепит", prog2H3:"Повар", prog2Meta1:"Доп. квалификация: <b>водитель категории «B»</b>",
+      prog3Index:"03 / Сварочное дело", prog3H3:"Электрогазосварщик", prog3Meta1:"Работа по металлу, монтаж и ремонт конструкций",
+      benTag:"Студентам колледжа", benH2:"Что даёт колледж, кроме диплома",
+      ben1H4:"Общежитие бесплатно", ben1P:"Иногородним студентам предоставляется бесплатное проживание на весь период обучения.",
+      ben2H4:"Проездные на каникулы", ben2P:"Выплата в размере 2-х МРП на период зимних и летних каникул.",
+      ben3H4:"Ежемесячная стипендия", ben3P:"Начисляется успевающим студентам в зависимости от среднего балла успеваемости.",
+      ben4H4:"Поддержка сирот", ben4P:"Повышенная стипендия для детей-сирот и детей, оставшихся без попечения родителей.",
+      admTag:"Поступление", admH2:"Как подать документы",
+      admP:"Приём ведётся среди выпускников 9-х классов. Ниже — полный список документов и размеры стипендий.",
+      doc1:"Документ об образовании (подлинник)", doc2:"Медицинская справка по форме 086 У с флюороснимком",
+      doc3:"Фотографии 3×4 — 4 шт.", doc4:"Удостоверение личности или свидетельство о рождении (копии)",
+      doc5:"Номер банковского счёта", doc6:"Характеристика из школы",
+      stipendH3:"Размер стипендии в месяц", stipend1Label:"При успеваемости «4»", stipend2Label:"Сироты и дети без попечения родителей",
+      revTag:"Отзывы", revH2:"Что говорят о поступлении и обучении",
+      revP:"Отзывы абитуриентов и студентов, оставленные на портале mycollege.kz.",
+      rev1:"Достойный сайт.", rev2:"Очень удобное приложение, и всё понятно.",
+      rev3:"Спасибо большое! Очень удобно и всё ясно, помогли с выбором профессии — тест добавил уверенности в правильном решении.",
+      rev4:"Спасибо. Получилось оставить заявку без проблем!", rev5:"Хороший сайт, помогающий с выбором профессии.",
+      rev6:"Большое спасибо за предоставленную возможность подавать заявку онлайн.",
+      rev7:"Сайт удобен и помогает определиться. Хотелось бы, чтобы срок обучения был указан более точно.",
+      rev8:"Здесь можно выбрать много специальностей. Искала подходящую и решила стать фельдшером — очень понравилось!",
+      rev9:"Спасибо. Всё на сайте понятно и доступно.",
+      staffTag:"Коллектив", staffH2:"Сотрудники и преподаватели",
+      staffP:"Имена, указанные на официальном сайте колледжа. Остальные подразделения отмечены по названию отдела — персональные данные их сотрудников на сайте колледжа не публикуются.",
+      staffRole:"Сотрудник колледжа",
+      staffDept1:"Администрация", staffDept1Sub:"Директор и заместители",
+      staffDept2:"Учебная часть", staffDept2Sub:"Организация учебного процесса",
+      staffDept3:"Мастера производственного обучения", staffDept3Sub:"Практические занятия по специальностям",
+      staffDept4:"Воспитательный отдел", staffDept4Sub:"Работа с общежитием и студентами",
+      contactTag:"Контакты", contactH2:"Как нас найти",
+      contactPhone:"Телефон", contactEmail:"Электронная почта",
+      contactAddress:"Адрес", contactAddressVal:"СКО, Тимирязевский район, с. Тимирязево, ул. Комсомольская, 19",
+      contactSite:"Официальный сайт",
+      footerText:"КГУ «Тимирязевский агротехнический колледж» · акимат Северо-Казахстанской области · <b>с. Тимирязево</b> — неофициальный информационный сайт"
+    },
+    kz: {
+      navAbout:"Колледж туралы", navPrograms:"Мамандықтар", navBenefits:"Студенттерге", navAdmission:"Түсу үшін",
+      navReviews:"Пікірлер", navStaff:"Ұжым", navContact:"Байланыс", navCta:"Өтінім беру",
+      brandName:"Тимирязев атындағы<span>Агротехникалық колледж</span>",
+      heroEyebrow:"КМҚК · СҚО әкімдігі · Тимирязев ауданы",
+      heroH1:"Мамандық жерден,<br>оқулықтан емес <em>алынады</em>",
+      heroSub:"Тракторшы-машинистерді, аспаздарды және электргаз дәнекерлеушілерді даярлаймыз — Солтүстік Қазақстанның егістіктерінде, асханаларында және өндірістерінде қажет мамандар. Тегін жатақхана, стипендия және мемлекеттік үлгідегі диплом.",
+      heroBtnPrimary:"Қалай түсуге болады", heroBtnGhost:"Мамандықтарды қарау",
+      stat1Label:"күндізгі оқу студенттері", stat2Label:"кадр даярлау бағдарламасы", stat3Label:"ай 9 сынып негізінде оқыту",
+      strip1:"2026–2027 оқу жылына қабылдау ашық", strip2:"Жатақханада тегін тұру",
+      strip3:"Мемлекеттік үлгідегі диплом", strip4:"WorldSkills қозғалысының қатысушысы",
+      aboutTag:"Колледж туралы", aboutH2:"Ауыл шаруашылығы бейінді коммуналдық мемлекеттік мекеме",
+      aboutP1:"«Тимирязев атындағы агротехникалық колледжі» КМҚК — Солтүстік Қазақстан облысы әкімдігінің оқу орны, Қазақстан Республикасы Білім және ғылым министрлігіне қарасты. Колледж СҚО Тимирязев ауданының Тимирязево ауылында орналасқан және өңірдің агроөнеркәсіптік кешені үшін жұмысшы кадрларды даярлайды.",
+      aboutP2:"Қабылдау 9 сынып негізінде жүргізіледі. Оқу нәтижесі бойынша түлектер мемлекеттік үлгідегі дипломды орта білім алумен қатар және таңдаған мамандығы бойынша жұмысшы біліктілігін алады.",
+      aboutP3:"Колледж WorldSkills қозғалысының қатысушысы болып табылады, студенттерді нақты өндіріске жақын стандарттар бойынша кәсіби шеберлік байқауларына дайындайды.",
+      aboutCardH3:"Колледж сандарда",
+      fact1Label:"Меншік нысаны", fact1Val:"Коммуналдық (КМҚК)",
+      fact2Label:"Құрылтайшы", fact2Val:"СҚО әкімдігі",
+      fact3Label:"Ведомство", fact3Val:"ҚР БҒМ",
+      fact4Label:"Студенттер саны", fact5Label:"Оқу бағдарламалары",
+      fact6Label:"Орналасқан жері", fact6Val:"Тимирязево ауылы, СҚО",
+      progTag:"Мамандықтар", progH2:"Жұмысшы кадрларды даярлайтын үш бағдарлама",
+      progP:"9 сынып негізінде оқыту, оқу жылының басталуы — 1 қыркүйек. Оқу мерзімі — 34 ай (2 жыл 10 ай).",
+      prog1Index:"01 / Механизация", prog1H3:"Ауыл шаруашылығы өндірісінің тракторшы-машинисі",
+      prog1Meta1:"Қосымша біліктілік: <b>слесарь-жөндеуші</b> + <b>«B» санатты жүргізуші</b>",
+      progMetaStart:"Басталуы: <b>2026 жылғы 1 қыркүйек</b>", progMetaDuration:"Мерзімі: <b>34 ай</b>",
+      prog2Index:"02 / Қоғамдық тамақтану", prog2H3:"Аспаз", prog2Meta1:"Қосымша біліктілік: <b>«B» санатты жүргізуші</b>",
+      prog3Index:"03 / Дәнекерлеу ісі", prog3H3:"Электргаз дәнекерлеуші", prog3Meta1:"Металмен жұмыс, құрылымдарды монтаждау және жөндеу",
+      benTag:"Колледж студенттеріне", benH2:"Дипломмен қатар колледж тағы не береді",
+      ben1H4:"Жатақхана тегін", ben1P:"Басқа қаладан келген студенттерге бүкіл оқу кезеңіне тегін тұрғын үй беріледі.",
+      ben2H4:"Демалысқа жол ақысы", ben2P:"Қысқы және жазғы демалыс кезеңіне 2 АЕК мөлшерінде төлем.",
+      ben3H4:"Ай сайынғы стипендия", ben3P:"Үлгерім орташа балына байланысты үлгерімді студенттерге есептеледі.",
+      ben4H4:"Жетімдерге қолдау", ben4P:"Жетім балалар мен ата-ана қамқорлығынсыз қалған балаларға жоғарылатылған стипендия.",
+      admTag:"Түсу үшін", admH2:"Құжаттарды қалай тапсыру керек",
+      admP:"Қабылдау 9 сынып түлектерінің арасында жүргізіледі. Төменде — құжаттардың толық тізімі және стипендия мөлшерлері.",
+      doc1:"Білім туралы құжат (түпнұсқа)", doc2:"Флюорография суретімен 086 У нысанындағы медициналық анықтама",
+      doc3:"3×4 фотосурет — 4 дана", doc4:"Жеке куәлік немесе туу туралы куәлік (көшірмелері)",
+      doc5:"Банктік шот нөмірі", doc6:"Мектептен мінездеме",
+      stipendH3:"Айлық стипендия мөлшері", stipend1Label:"«4» үлгерімі бойынша", stipend2Label:"Жетімдер мен ата-ана қамқорлығынсыз қалған балалар",
+      revTag:"Пікірлер", revH2:"Түсу және оқу туралы не айтады",
+      revP:"mycollege.kz порталында қалдырылған талапкерлер мен студенттердің пікірлері.",
+      rev1:"Лайықты сайт.", rev2:"Өте ыңғайлы қосымша, барлығы түсінікті.",
+      rev3:"Көп рахмет! Өте ыңғайлы және бәрі анық, мамандық таңдауға көмектесті — тест дұрыс шешімге деген сенімділікті арттырды.",
+      rev4:"Рахмет. Өтінімді ешбір қиындықсыз қалдыра алдым!", rev5:"Мамандық таңдауға көмектесетін жақсы сайт.",
+      rev6:"Онлайн өтінім беру мүмкіндігі үшін көп рахмет.",
+      rev7:"Сайт ыңғайлы және таңдау жасауға көмектеседі. Оқу мерзімі дәлірек көрсетілсе екен деймін.",
+      rev8:"Мұнда көптеген мамандықты таңдауға болады. Өзіме лайықтысын іздеп, фельдшер болуды таңдадым — өте ұнады!",
+      rev9:"Рахмет. Сайтта бәрі түсінікті әрі қолжетімді.",
+      staffTag:"Ұжым", staffH2:"Қызметкерлер мен оқытушылар",
+      staffP:"Колледждің ресми сайтында көрсетілген есімдер. Қалған бөлімшелер бөлім атауы бойынша белгіленген — олардың қызметкерлерінің дербес деректері колледж сайтында жарияланбайды.",
+      staffRole:"Колледж қызметкері",
+      staffDept1:"Әкімшілік", staffDept1Sub:"Директор және орынбасарлары",
+      staffDept2:"Оқу бөлімі", staffDept2Sub:"Оқу процесін ұйымдастыру",
+      staffDept3:"Өндірістік оқыту шеберлері", staffDept3Sub:"Мамандықтар бойынша практикалық сабақтар",
+      staffDept4:"Тәрбие бөлімі", staffDept4Sub:"Жатақхана және студенттермен жұмыс",
+      contactTag:"Байланыс", contactH2:"Бізді қалай табуға болады",
+      contactPhone:"Телефон", contactEmail:"Электрондық пошта",
+      contactAddress:"Мекенжай", contactAddressVal:"СҚО, Тимирязев ауданы, Тимирязево ауылы, Комсомольская көшесі, 19",
+      contactSite:"Ресми сайт",
+      footerText:"«Тимирязев атындағы агротехникалық колледжі» КМҚК · Солтүстік Қазақстан облысы әкімдігі · <b>Тимирязево ауылы</b> — бейресми ақпараттық сайт"
+    },
+    en: {
+      navAbout:"About", navPrograms:"Programs", navBenefits:"Students", navAdmission:"Admission",
+      navReviews:"Reviews", navStaff:"Staff", navContact:"Contact", navCta:"Apply now",
+      brandName:"Timiryazev<span>Agrotechnical College</span>",
+      heroEyebrow:"Municipal institution · Akimat of NKR · Timiryazev district",
+      heroH1:"A trade from the land,<br>not from a <em>textbook</em>",
+      heroSub:"We train tractor operators, cooks and gas welders — specialists needed in the fields, kitchens and plants of Northern Kazakhstan. Free dormitory, a stipend and a state-standard diploma.",
+      heroBtnPrimary:"How to apply", heroBtnGhost:"View programs",
+      stat1Label:"full-time students", stat2Label:"training programs", stat3Label:"months of study after grade 9",
+      strip1:"Admissions for 2026–2027 are open", strip2:"Free dormitory accommodation",
+      strip3:"State-standard diploma", strip4:"WorldSkills movement participant",
+      aboutTag:"About the college", aboutH2:"A municipal institution with an agricultural profile",
+      aboutP1:"Timiryazev Agrotechnical College is an educational institution of the Akimat of North Kazakhstan Region, under the Ministry of Education and Science of the Republic of Kazakhstan. The college is located in the village of Timiryazevo, Timiryazev district, and trains workers for the region's agro-industrial sector.",
+      aboutP2:"Admission is based on 9 grades of schooling. Upon completion, graduates receive a state-standard diploma along with secondary education and a work qualification in their chosen trade.",
+      aboutP3:"The college takes part in the WorldSkills movement, preparing students for professional skills competitions under standards close to real production.",
+      aboutCardH3:"The college in numbers",
+      fact1Label:"Ownership type", fact1Val:"Municipal institution",
+      fact2Label:"Founder", fact2Val:"Akimat of NKR",
+      fact3Label:"Supervising body", fact3Val:"Ministry of Education and Science of RK",
+      fact4Label:"Students", fact5Label:"Training programs",
+      fact6Label:"Location", fact6Val:"Timiryazevo, North Kazakhstan Region",
+      progTag:"Programs", progH2:"Three programs training skilled workers",
+      progP:"Study is based on 9 grades of schooling, academic year starts September 1. Duration — 34 months (2 years 10 months).",
+      prog1Index:"01 / Mechanization", prog1H3:"Agricultural tractor operator",
+      prog1Meta1:"Additional qualifications: <b>repair mechanic</b> + <b>Category «B» driver's license</b>",
+      progMetaStart:"Starts: <b>September 1, 2026</b>", progMetaDuration:"Duration: <b>34 months</b>",
+      prog2Index:"02 / Catering", prog2H3:"Cook", prog2Meta1:"Additional qualification: <b>Category «B» driver's license</b>",
+      prog3Index:"03 / Welding", prog3H3:"Gas and electric welder", prog3Meta1:"Metalwork, assembly and repair of structures",
+      benTag:"For students", benH2:"What the college offers besides a diploma",
+      ben1H4:"Free dormitory", ben1P:"Out-of-town students are given free accommodation for the entire period of study.",
+      ben2H4:"Travel allowance for breaks", ben2P:"A payment equal to 2 MCI for the winter and summer holiday periods.",
+      ben3H4:"Monthly stipend", ben3P:"Paid to students in good standing based on their average grade.",
+      ben4H4:"Support for orphans", ben4P:"An increased stipend for orphans and children left without parental care.",
+      admTag:"Admission", admH2:"How to submit documents",
+      admP:"Admission is open to graduates of grade 9. Below is the full list of required documents and stipend amounts.",
+      doc1:"Education certificate (original)", doc2:"Medical certificate (form 086 U) with a fluorography scan",
+      doc3:"3×4 photographs — 4 pcs.", doc4:"ID card or birth certificate (copies)",
+      doc5:"Bank account number", doc6:"School reference letter",
+      stipendH3:"Monthly stipend amount", stipend1Label:"With a grade average of «4»", stipend2Label:"Orphans and children without parental care",
+      revTag:"Reviews", revH2:"What people say about admission and studying",
+      revP:"Reviews from applicants and students, left on the mycollege.kz portal.",
+      rev1:"A worthy site.", rev2:"A very convenient app, everything is clear.",
+      rev3:"Thank you so much! Very convenient and clear, it helped with choosing a profession — the test added confidence in the right decision.",
+      rev4:"Thank you. I managed to submit my application without any problems!", rev5:"A good site that helps with choosing a profession.",
+      rev6:"Many thanks for the opportunity to apply online.",
+      rev7:"The site is convenient and helps you decide. It would be nice if the duration of study were shown more precisely.",
+      rev8:"There are many specialties to choose from here. I was looking for the right one and decided to become a paramedic — I really liked it!",
+      rev9:"Thank you. Everything on the site is clear and accessible.",
+      staffTag:"Staff", staffH2:"Staff and teachers",
+      staffP:"Names as listed on the college's official website. Other departments are shown by department name only — personal data of their staff is not published on the college website.",
+      staffRole:"College staff member",
+      staffDept1:"Administration", staffDept1Sub:"Director and deputies",
+      staffDept2:"Academic office", staffDept2Sub:"Organization of the study process",
+      staffDept3:"Vocational training instructors", staffDept3Sub:"Practical classes by specialty",
+      staffDept4:"Student affairs office", staffDept4Sub:"Dormitory and student support",
+      contactTag:"Contact", contactH2:"How to find us",
+      contactPhone:"Phone", contactEmail:"Email",
+      contactAddress:"Address", contactAddressVal:"North Kazakhstan Region, Timiryazev district, Timiryazevo village, Komsomolskaya St. 19",
+      contactSite:"Official website",
+      footerText:"Timiryazev Agrotechnical College · Akimat of North Kazakhstan Region · <b>Timiryazevo village</b> — unofficial information site"
+    }
+  };
+
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const dict = translations[lang] || translations.ru;
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      const dict = translations[lang] || translations.ru;
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
+    try { localStorage.setItem('siteLang', lang); } catch(e) {}
+  }
+
+  document.getElementById('langSwitch').addEventListener('click', (e) => {
+    const btn = e.target.closest('.lang-btn');
+    if (!btn) return;
+    applyLanguage(btn.getAttribute('data-lang'));
+  });
+
+  let savedLang = 'ru';
+  try { savedLang = localStorage.getItem('siteLang') || 'ru'; } catch(e) {}
+  applyLanguage(savedLang);
+
+  // Mobile menu toggle
+  const burger = document.getElementById('burgerBtn');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    burger.classList.toggle('open', isOpen);
+    burger.setAttribute('aria-expanded', isOpen);
+  });
+  // Close mobile menu after tapping a link
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Active tab highlight on scroll
+  const tabs = document.querySelectorAll('[data-tab]');
+  const sections = Array.from(tabs).map(t => document.querySelector(t.getAttribute('href')));
+  function setActiveTab(){
+    let current = sections[0];
+    const offset = 90;
+    sections.forEach(sec => {
+      if (sec && sec.getBoundingClientRect().top - offset <= 0) current = sec;
+    });
+    tabs.forEach(t => {
+      t.classList.toggle('active', current && t.getAttribute('href') === '#' + current.id);
+    });
+  }
+  window.addEventListener('scroll', setActiveTab, { passive: true });
+  window.addEventListener('load', setActiveTab);
+</script>
+
+</body>
+</html>
